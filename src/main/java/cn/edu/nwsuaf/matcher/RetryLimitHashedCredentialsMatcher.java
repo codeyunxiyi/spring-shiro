@@ -38,26 +38,16 @@ public class RetryLimitHashedCredentialsMatcher extends HashedCredentialsMatcher
         if (retryCount.incrementAndGet() > 5) {
             throw new ExcessiveAttemptsException();
         }
-        boolean match = super.doCredentialsMatch(token, info);
+        boolean match = reDoCredentialsMatch(token, info);
         if (match) {
             passwordRetryCache.remove(username);
         }
         return match;
     }
 
-    @Override
-    public Hash hashProvidedCredentials(Object credentials, Object salt, int hashIterations) {
-        String hashAlgorithmName = assertHashAlgorithmName();
-        return new SimpleHash(hashAlgorithmName, credentials, salt, hashIterations);
-    }
-
-    private String assertHashAlgorithmName() throws IllegalStateException {
-        String hashAlgorithmName = getHashAlgorithmName();
-        if (hashAlgorithmName == null) {
-            String msg = "Required 'hashAlgorithmName' property has not been set.  This is required to execute " +
-                    "the hashing algorithm.";
-            throw new IllegalStateException(msg);
-        }
-        return hashAlgorithmName;
+    private boolean reDoCredentialsMatch(AuthenticationToken token, AuthenticationInfo info){
+        Object tokenCredentials = token.getCredentials();
+        Object accountCredentials = info.getCredentials();
+        return equals(tokenCredentials, accountCredentials);
     }
 }

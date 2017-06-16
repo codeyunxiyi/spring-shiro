@@ -16,21 +16,21 @@
     </bean>
 
     <!-- 凭证匹配器 -->
-    <bean id="credentialsMatcher" class="cn.edu.nwsuaf.matcher.RetryLimitHashedCredentialsMatcher">
-        <!--<constructor-arg ref="cacheManager" />-->
-        <!--<property name="passwordRetryCache" value="passwordRetryCache"/>-->
-        <property name="hashAlgorithmName" value="md5" />
-        <property name="hashIterations" value="2" />
-        <property name="storedCredentialsHexEncoded" value="true" />
-    </bean>
+    <!--<bean id="credentialsMatcher" class="cn.edu.nwsuaf.matcher.RetryLimitHashedCredentialsMatcher">-->
+        <!--&lt;!&ndash;<constructor-arg ref="cacheManager" />&ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="passwordRetryCache" value="passwordRetryCache"/>&ndash;&gt;-->
+        <!--<property name="hashAlgorithmName" value="md5" />-->
+        <!--<property name="hashIterations" value="2" />-->
+        <!--<property name="storedCredentialsHexEncoded" value="true" />-->
+    <!--</bean>-->
 
-    <!-- Realm实现 -->
-    <bean id="userRealm" class="cn.edu.nwsuaf.realm.UserRealm">
-        <property name="passwordRetryCache" value="passwordRetryCache" />
-        <property name="credentialsMatcher" ref="credentialsMatcher" />
-    </bean>
+    <!--&lt;!&ndash; Realm实现 &ndash;&gt;-->
+    <!--<bean id="userRealm" class="cn.edu.nwsuaf.realm.UserRealm">-->
+        <!--&lt;!&ndash;<property name="passwordRetryCache" value="passwordRetryCache" />&ndash;&gt;-->
+        <!--<property name="credentialsMatcher" ref="credentialsMatcher" />-->
+    <!--</bean>-->
 
-    <bean id="casRealm" class="org.apache.shiro.cas.CasRealm">
+    <bean id="casRealm" class="cn.edu.nwsuaf.realm.UserRealm">
         <property name="defaultRoles" value="ROLE_USER"/>
         <property name="cachingEnabled" value="true"/>
         <property name="authenticationCachingEnabled" value="true"/>
@@ -43,12 +43,7 @@
     </bean>
     <!-- 安全管理器 -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
-        <property name="realms">
-            <list>
-                <ref bean="userRealm" />
-                <ref bean="casRealm" />
-            </list>
-        </property>
+        <property name="realm" ref="casRealm" />
         <!--<property name="realm" ref="casRealm" />-->
         <property ref="cacheManager" name="cacheManager"/>
     </bean>
@@ -70,7 +65,7 @@
         </property>
         <property name="filterChainDefinitions">
             <value>
-                /authc/admin = roles[admin]
+                /authc/admin = roles[ROLE_ADMIN]
                 /login = cas
                 /** = authc
             </value>
