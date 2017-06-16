@@ -44,7 +44,6 @@
     <!-- 安全管理器 -->
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <property name="realm" ref="casRealm" />
-        <!--<property name="realm" ref="casRealm" />-->
         <property ref="cacheManager" name="cacheManager"/>
     </bean>
     <bean class="cn.edu.nwsuaf.filter.MyCasFilter" id="casFilter">
@@ -71,11 +70,11 @@
             </value>
         </property>
         <!--
-            cas验证成功跳转路径不能包含有需要cas认证路径中
+            cas验证成功跳转路径不能包含有需要cas认证路径
             如：/authc/**是需要cas认证的路径
                /authc/success是成功后的跳转路径，
                这是不行的，因为一开始/authc/**进行认证，认证成功后，发现 /authc/success也需要认证，
-               于是会重新对/authc/success进行认证，然后又成功后，接下发现/authc/success又需要认证。
+               于是会重新对/authc/success进行认证，然后成功后，接下发现/authc/success又需要认证。
                就产生了循环重定向了。
         -->
     </bean>
